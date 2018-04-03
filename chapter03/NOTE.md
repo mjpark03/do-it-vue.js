@@ -103,3 +103,55 @@ Vue.component('component name', {
   // component contents
 });
 ```
+
+## 뷰 컴포넌트 통신
+
+- 컴포넌트 마다 고유한 유효 범위 존재
+  - 다른 컴포넌트의 값을 직접 사용할 수 없음
+  - 애플리케이션이 모두 동일한 데이터 흐름 갖게 됨
+  - Vue.js에서 정의한 데이터 전달 방법을 준수해야 함
+- 상위 > 하위 컴포넌트 데이터 전달
+  - props 속성
+```javascript
+Vue.component('child-component', {
+  props: ['props 속성 이름']
+});
+```
+```html
+<child-component v-bind:props 속성이름="상위 컴포넌트의 data 속성"></child-component>
+```
+- 하위 > 상위 컴포넌트 이벤트 전달
+  - 이벤트 발생 $emit()
+```javascript
+this.$emit('이벤트명');
+```
+  - 이벤트 수신 v-on:
+```html
+<child-component v-on:이벤트명="상위 컴포넌트의 메서드명"></child-component>
+```
+- 같은 레벨 간 컴포넌트 통신
+  - 이벤트 버스
+    - 추가 인스턴스 1개 생성
+    - 이벤트 전송 .$emit()
+    - 이벤트 수신 .$on()
+```javascript
+var eventBus = new Vue();
+```
+
+```javascript
+methods: {
+  메서드명: function() {
+    eventBus.$emit('이벤트명', 데이터);
+  }
+}
+```
+
+```javascript
+methods: {
+  crested: function() {
+    eventBus.$on('이벤트명', function(데이터) {
+      ...
+    });
+  }
+}
+```
